@@ -1,5 +1,13 @@
+import sys
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+
+# -----------------------------------------------------------
+# FIX PYTHON PATH FOR VERCEL (NO folder structure changes)
+# -----------------------------------------------------------
+ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
+sys.path.append(ROOT_DIR)
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -101,7 +109,7 @@ def extract_dataset(req, loader):
 
 
 # -----------------------------------------------------------
-# OLD ENGINE ROUTES (Analyze, Predict, Forecast, etc.)
+# OLD ENGINE ROUTES
 # -----------------------------------------------------------
 @app.post("/analyze")
 def analyze():
@@ -168,7 +176,6 @@ def trend():
 # -----------------------------------------------------------
 # NEW ADVANCED ENGINE ROUTES
 # -----------------------------------------------------------
-
 @app.post("/visualize")
 def visualize():
     eng = load_engines()
@@ -229,5 +236,5 @@ def bigdata():
 
 
 # -----------------------------------------------------------
-# No app.run() — Vercel handles this automatically
+# Do NOT add app.run()
 # -----------------------------------------------------------
