@@ -1,5 +1,6 @@
 # main.py
 
+import json
 from data.dataset_loader import DatasetLoader
 
 # Old DS task engines
@@ -19,6 +20,14 @@ from tasks.auto_bigdata import AutoBigData
 
 from ui.dashboard import Dashboard
 from core.engine_router import EngineRouter
+
+
+def safe_eval(expr):
+    """Safely evaluate user input to avoid crashes."""
+    try:
+        return eval(expr)
+    except Exception:
+        raise ValueError("Invalid input format. Use Python list or dict format.")
 
 
 def main():
@@ -76,7 +85,7 @@ def main():
             print("\n[INPUT] Enter dataset (Python list):")
             data = input("Dataset: ")
             try:
-                dataset = loader.load_raw(eval(data))
+                dataset = loader.load_raw(safe_eval(data))
                 result = analyzer.run(dataset)
                 dashboard.show_analysis_result(result)
             except Exception as e:
@@ -87,10 +96,10 @@ def main():
             print("\n[INPUT] Dataset for prediction")
             data = input("Dataset: ")
             try:
-                dataset = loader.load_raw(eval(data))
+                dataset = loader.load_raw(safe_eval(data))
                 result = predictor.run(dataset)
                 print("\n===== PREDICTION RESULT =====")
-                print(result)
+                print(json.dumps(result, indent=2))
             except Exception as e:
                 print("[ERROR] Invalid dataset:", e)
 
@@ -100,11 +109,11 @@ def main():
             data = input("Dataset: ")
             steps = input("Steps (default=5): ")
             try:
-                dataset = loader.load_raw(eval(data))
+                dataset = loader.load_raw(safe_eval(data))
                 steps = int(steps) if steps else 5
                 result = forecaster.run(dataset, steps)
                 print("\n===== FORECAST RESULT =====")
-                print(result)
+                print(json.dumps(result, indent=2))
             except Exception as e:
                 print("[ERROR] Forecast error:", e)
 
@@ -113,10 +122,10 @@ def main():
             print("\n[INPUT] Dataset for anomaly detection")
             data = input("Dataset: ")
             try:
-                dataset = loader.load_raw(eval(data))
+                dataset = loader.load_raw(safe_eval(data))
                 result = anomaly_detector.run(dataset)
                 print("\n===== ANOMALY REPORT =====")
-                print(result)
+                print(json.dumps(result, indent=2))
             except Exception as e:
                 print("[ERROR] Invalid dataset:", e)
 
@@ -125,7 +134,7 @@ def main():
             print("\n[INPUT] Dataset for insights")
             data = input("Dataset: ")
             try:
-                dataset = loader.load_raw(eval(data))
+                dataset = loader.load_raw(safe_eval(data))
                 result = insight_engine.run(dataset)
                 print("\n===== INSIGHTS =====")
                 for line in result["insights"]:
@@ -138,7 +147,7 @@ def main():
             print("\n[INPUT] Dataset for trend extraction")
             data = input("Dataset: ")
             try:
-                dataset = loader.load_raw(eval(data))
+                dataset = loader.load_raw(safe_eval(data))
                 score = router.route("trend", dataset)
                 print("\nTrend Score:", score)
             except Exception as e:
@@ -149,10 +158,10 @@ def main():
             print("\n[INPUT] Dataset for visualization")
             data = input("Dataset: ")
             try:
-                dataset = loader.load_raw(eval(data))
-                res = visualizer.run(dataset)
+                dataset = loader.load_raw(safe_eval(data))
+                result = visualizer.run(dataset)
                 print("\n===== VISUALIZATION SPECS =====")
-                print(res)
+                print(json.dumps(result, indent=2))
             except Exception as e:
                 print("[ERROR] Visualization error:", e)
 
@@ -161,10 +170,10 @@ def main():
             print("\n[INPUT] Dataset for EDA")
             data = input("Dataset: ")
             try:
-                dataset = loader.load_raw(eval(data))
-                res = eda_engine.run(dataset)
+                dataset = loader.load_raw(safe_eval(data))
+                result = eda_engine.run(dataset)
                 print("\n===== EDA REPORT =====")
-                print(res)
+                print(json.dumps(result, indent=2))
             except Exception as e:
                 print("[ERROR] EDA error:", e)
 
@@ -173,49 +182,49 @@ def main():
             print("\n[INPUT] Dataset for Feature Engineering")
             data = input("Dataset: ")
             try:
-                dataset = loader.load_raw(eval(data))
-                res = feature_engineer.run(dataset)
+                dataset = loader.load_raw(safe_eval(data))
+                result = feature_engineer.run(dataset)
                 print("\n===== FEATURE ENGINEERING RESULT =====")
-                print(res)
+                print(json.dumps(result, indent=2))
             except Exception as e:
                 print("[ERROR] Feature engineering error:", e)
 
         # 🔟 Auto Model Builder
         elif choice == "10":
             print("\nEnter X (features): ")
-            X = eval(input("X: "))
+            X = safe_eval(input("X: "))
             print("\nEnter y (labels): ")
-            y = eval(input("y: "))
+            y = safe_eval(input("y: "))
             try:
-                res = model_engine.run(X, y)
+                result = model_engine.run(X, y)
                 print("\n===== MODEL RESULT =====")
-                print(res)
+                print(json.dumps(result, indent=2))
             except Exception as e:
                 print("[ERROR] Model building error:", e)
 
         # 1️⃣1️⃣ Auto Evaluate
         elif choice == "11":
             print("\nEnter true labels:")
-            y_true = eval(input("y_true: "))
+            y_true = safe_eval(input("y_true: "))
             print("\nEnter predicted labels:")
-            y_pred = eval(input("y_pred: "))
+            y_pred = safe_eval(input("y_pred: "))
 
             try:
-                res = evaluator.run(y_true, y_pred)
+                result = evaluator.run(y_true, y_pred)
                 print("\n===== EVALUATION RESULT =====")
-                print(res)
+                print(json.dumps(result, indent=2))
             except Exception as e:
                 print("[ERROR] Evaluation error:", e)
 
         # 1️⃣2️⃣ Auto Big Data Processing
         elif choice == "12":
             print("\nEnter big CSV file path:")
-            path = input("File path: ")
+            path = input("File path: ").strip()
 
             try:
-                res = bigdata_engine.run(path)
+                result = bigdata_engine.run(path)
                 print("\n===== BIGDATA RESULT =====")
-                print(res)
+                print(json.dumps(result, indent=2))
             except Exception as e:
                 print("[ERROR] BigData processing error:", e)
 

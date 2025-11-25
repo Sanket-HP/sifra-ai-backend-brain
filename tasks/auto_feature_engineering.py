@@ -2,7 +2,8 @@
 
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import StandardScaler, MinMaxScaler, PolynomialFeatures
+from sklearn.preprocessing import MinMaxScaler, PolynomialFeatures
+
 
 class AutoFeatureEngineering:
     """
@@ -14,7 +15,7 @@ class AutoFeatureEngineering:
         print("[TASK] Auto Feature Engineering Engine Ready")
 
     # ------------------------------------------------------------
-    # Helper: Detect column type
+    # Detect dtype
     # ------------------------------------------------------------
     def detect_type(self, series):
         if pd.api.types.is_numeric_dtype(series):
@@ -25,22 +26,29 @@ class AutoFeatureEngineering:
             return "categorical"
 
     # ------------------------------------------------------------
-    # Helper: Generate polynomial features
+    # Extract polynomial features
     # ------------------------------------------------------------
     def generate_polynomials(self, df):
-        poly = PolynomialFeatures(degree=2, include_bias=False)
         numeric_df = df.select_dtypes(include=[np.number])
 
         if numeric_df.shape[1] < 1:
-            return df
+            return df  # nothing to expand
 
+        poly = PolynomialFeatures(degree=2, include_bias=False)
         poly_features = poly.fit_transform(numeric_df)
-        poly_df = pd.DataFrame(poly_features, columns=poly.get_feature_names_out(numeric_df.columns))
 
-        return pd.concat([df.reset_index(drop=True), poly_df.reset_index(drop=True)], axis=1)
+        poly_df = pd.DataFrame(
+            poly_features,
+            columns=poly.get_feature_names_out(numeric_df.columns)
+        )
+
+        poly_df = poly_df.reset_index(drop=True)
+        df = df.reset_index(drop=True)
+
+        return pd.concat([df, poly_df], axis=1)
 
     # ------------------------------------------------------------
-    # Helper: Extract features from datetime
+    # Extract date features
     # ------------------------------------------------------------
     def extract_date_features(self, df):
         for col in df.columns:
@@ -52,40 +60,48 @@ class AutoFeatureEngineering:
         return df
 
     # ------------------------------------------------------------
-    # MAIN FUNCTION
+    # MAIN ENGINE
     # ------------------------------------------------------------
     def run(self, dataset):
         """
         Accepts list/array → returns enhanced dataset + metadata.
         """
 
+        # Convert dataset to DataFrame
         df = pd.DataFrame(dataset)
 
-        # Convert to numeric or datetime where possible
+        # 🎯 FIX: Convert all column names to strings
+        df.columns = df.columns.astype(str)
+
+        # Try numeric or datetime conversion
         for col in df.columns:
+            # Attempt numeric conversion
             df[col] = pd.to_numeric(df[col], errors="ignore")
+
+            # Attempt datetime conversion
             if df[col].dtype == object:
                 try:
-                    df[col] = pd.to_datetime(df[col])
+                    df[col] = pd.to_datetime(df[col], errors="raise")
                 except:
                     pass
 
-        # Detect column types
+        # Detect types
         col_types = {col: self.detect_type(df[col]) for col in df.columns}
 
-        # Handle missing values
-        df = df.fillna(method="ffill").fillna(method="bfill")
+        # Fill NaNs properly (no warnings)
+        df = df.ffill().bfill()
 
-        # Extract date features
+        # Extract date-based features
         df = self.extract_date_features(df)
 
-        # One-hot encode categorical columns
-        df = pd.get_dummies(df, drop_first=True)
+        # One-hot encode categorical safely
+        df = pd.get_dummies(df, drop_first=False)
 
-        # Scaling (MinMax)
-        scaler = MinMaxScaler()
+        # Scale numeric values
         numeric_cols = df.select_dtypes(include=[np.number]).columns
-        df[numeric_cols] = scaler.fit_transform(df[numeric_cols])
+        if len(numeric_cols) > 0:
+            scaler = MinMaxScaler()
+            df[numeric_cols] = scaler.fit_transform(df[numeric_cols])
 
         # Add polynomial features
         df = self.generate_polynomials(df)
@@ -93,6 +109,7 @@ class AutoFeatureEngineering:
         # Remove constant columns
         df = df.loc[:, df.apply(pd.Series.nunique) > 1]
 
+        # Final safe output
         return {
             "status": "success",
             "original_columns": list(col_types.keys()),
@@ -100,3 +117,6 @@ class AutoFeatureEngineering:
             "final_shape": df.shape,
             "transformed_data": df.fillna(0).values.tolist()
         }
+# -----------------------------------------------------------
+# END OF FILE
+# -----------------------------------------------------------

@@ -14,14 +14,14 @@ from sklearn.metrics import (
     silhouette_score
 )
 
+
 class AutoModeler:
     """
     Autonomous ML Model Training Engine for SIFRA AI.
-    Automatically detects task type:
+    Supports:
       - Regression
       - Classification
       - Clustering
-    And trains the best model.
     """
 
     def __init__(self):
@@ -31,35 +31,60 @@ class AutoModeler:
     # Detect problem type automatically
     # --------------------------------------------------------------
     def detect_task_type(self, y):
+        y = np.array(y)
+
+        # Categorical if few unique values & integers
         unique_vals = len(np.unique(y))
 
-        # Classification if target has few categories
         if unique_vals <= 5:
             return "classification"
 
-        # Regression if target is numeric with many values
-        if unique_vals > 5 and np.issubdtype(y.dtype, np.number):
+        # Regression if many numeric values
+        if np.issubdtype(y.dtype, np.number):
             return "regression"
 
-        # Otherwise clustering
         return "clustering"
 
     # --------------------------------------------------------------
-    # Main training engine
+    # Handle both (X, y) OR dataset=[..., ..., ...]
     # --------------------------------------------------------------
-    def run(self, dataset):
+    def parse_input(self, *args):
         """
-        dataset must be 2D: [[x1, x2, ..., y], ...]
-        Last column is treated as target (except clustering).
+        Supports two input formats:
+        1️⃣ run(X, y)
+        2️⃣ run(dataset) where last column = y
         """
 
-        df = pd.DataFrame(dataset)
+        # Case 1: run(X, y)
+        if len(args) == 2:
+            X, y = args
+            X = np.array(X)
+            y = np.array(y)
+            return X, y
 
-        if df.shape[1] < 2:
-            return {"error": "Dataset requires at least 2 columns: features + target"}
+        # Case 2: run(dataset)
+        elif len(args) == 1:
+            dataset = args[0]
+            df = pd.DataFrame(dataset)
 
-        X = df.iloc[:, :-1].values
-        y = df.iloc[:, -1].values
+            if df.shape[1] < 2:
+                raise ValueError("Dataset must have at least 2 columns (features + target).")
+
+            X = df.iloc[:, :-1].values
+            y = df.iloc[:, -1].values
+            return X, y
+
+        else:
+            raise ValueError("Invalid input format for AutoModeler.run().")
+
+    # --------------------------------------------------------------
+    # MAIN TRAINING ENGINE
+    # --------------------------------------------------------------
+    def run(self, *args):
+        try:
+            X, y = self.parse_input(*args)
+        except Exception as e:
+            return {"error": str(e)}
 
         task = self.detect_task_type(y)
 
@@ -67,83 +92,88 @@ class AutoModeler:
         # 1️⃣ REGRESSION
         # ---------------------------
         if task == "regression":
-            X_train, X_test, y_train, y_test = train_test_split(
-                X, y, test_size=0.2, random_state=42
-            )
+            try:
+                X_train, X_test, y_train, y_test = train_test_split(
+                    X, y, test_size=0.25, random_state=42
+                )
 
-            models = {
-                "LinearRegression": LinearRegression(),
-                "RandomForestRegressor": RandomForestRegressor(n_estimators=150)
-            }
+                models = {
+                    "LinearRegression": LinearRegression(),
+                    "RandomForestRegressor": RandomForestRegressor(n_estimators=120)
+                }
 
-            best_model = None
-            best_score = -float("inf")
-            results = {}
+                best_model = None
+                best_score = -999
+                results = {}
 
-            for name, model in models.items():
-                model.fit(X_train, y_train)
-                preds = model.predict(X_test)
+                for name, model in models.items():
+                    model.fit(X_train, y_train)
+                    preds = model.predict(X_test)
+                    score = r2_score(y_test, preds)
+                    results[name] = float(score)
 
-                score = r2_score(y_test, preds)
-                results[name] = float(score)
+                    if score > best_score:
+                        best_model = name
+                        best_score = score
 
-                if score > best_score:
-                    best_score = score
-                    best_model = name
+                return {
+                    "status": "success",
+                    "task_type": "regression",
+                    "best_model": best_model,
+                    "scores": results,
+                    "r2_best": float(best_score)
+                }
 
-            return {
-                "status": "success",
-                "task_type": "regression",
-                "best_model": best_model,
-                "scores": results,
-                "r2_best": float(best_score)
-            }
+            except Exception as e:
+                return {"error": f"Regression failed: {str(e)}"}
 
         # ---------------------------
         # 2️⃣ CLASSIFICATION
         # ---------------------------
         elif task == "classification":
-            X_train, X_test, y_train, y_test = train_test_split(
-                X, y, test_size=0.2, random_state=42
-            )
+            try:
+                X_train, X_test, y_train, y_test = train_test_split(
+                    X, y, test_size=0.25, random_state=42
+                )
 
-            models = {
-                "LogisticRegression": LogisticRegression(max_iter=300),
-                "RandomForestClassifier": RandomForestClassifier(n_estimators=150)
-            }
+                models = {
+                    "LogisticRegression": LogisticRegression(max_iter=300),
+                    "RandomForestClassifier": RandomForestClassifier(n_estimators=120)
+                }
 
-            best_model = None
-            best_score = -float("inf")
-            results = {}
+                best_model = None
+                best_score = -999
+                results = {}
 
-            for name, model in models.items():
-                model.fit(X_train, y_train)
-                preds = model.predict(X_test)
+                for name, model in models.items():
+                    model.fit(X_train, y_train)
+                    preds = model.predict(X_test)
+                    score = accuracy_score(y_test, preds)
+                    results[name] = float(score)
 
-                score = accuracy_score(y_test, preds)
-                results[name] = float(score)
+                    if score > best_score:
+                        best_model = name
+                        best_score = score
 
-                if score > best_score:
-                    best_score = score
-                    best_model = name
+                return {
+                    "status": "success",
+                    "task_type": "classification",
+                    "best_model": best_model,
+                    "scores": results,
+                    "accuracy_best": float(best_score)
+                }
 
-            return {
-                "status": "success",
-                "task_type": "classification",
-                "best_model": best_model,
-                "scores": results,
-                "accuracy_best": float(best_score)
-            }
+            except Exception as e:
+                return {"error": f"Classification failed: {str(e)}"}
 
         # ---------------------------
-        # 3️⃣ CLUSTERING (unsupervised)
+        # 3️⃣ CLUSTERING
         # ---------------------------
         else:
             try:
                 k = 3
                 model = KMeans(n_clusters=k, random_state=42)
                 model.fit(X)
-
                 labels = model.labels_
                 score = silhouette_score(X, labels)
 
@@ -157,3 +187,5 @@ class AutoModeler:
 
             except Exception as e:
                 return {"error": f"Clustering failed: {str(e)}"}
+# -----------------------------------------------------------
+# END OF FILE   # -----------------------------------------------------------
