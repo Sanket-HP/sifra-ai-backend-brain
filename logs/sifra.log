@@ -1,0 +1,64 @@
+2025-11-25 12:09:24,084 | SIFRA_CORE | INFO | SIFRA Core initialized successfully.
+2025-11-25 12:09:24,100 | SIFRA_CORE | INFO | SIFRA Core initialized successfully.
+2025-11-25 12:09:24,105 | SIFRA_CORE | INFO | SIFRA Core initialized successfully.
+2025-11-25 12:09:24,108 | SIFRA_CORE | INFO | SIFRA Core initialized successfully.
+2025-11-25 12:09:24,112 | SIFRA_CORE | INFO | SIFRA Core initialized successfully.
+2025-11-25 12:09:24,114 | SIFRA_CORE | INFO | SIFRA Core initialized successfully.
+2025-11-25 12:10:36,634 | SIFRA_CORE | INFO | Running full pipeline for goal: analyze
+2025-11-25 12:10:57,254 | SIFRA_CORE | INFO | Running full pipeline for goal: predict
+2025-11-25 12:11:20,225 | SIFRA_CORE | INFO | Running full pipeline for goal: forecast
+2025-11-25 12:11:38,497 | SIFRA_CORE | INFO | Running full pipeline for goal: anomaly
+2025-11-25 12:13:47,567 | SIFRA_CORE | INFO | SIFRA Core initialized successfully.
+2025-11-25 12:13:47,567 | SIFRA_CORE | INFO | SIFRA Core initialized successfully.
+2025-11-25 12:13:47,567 | SIFRA_CORE | INFO | SIFRA Core initialized successfully.
+2025-11-25 12:13:47,579 | SIFRA_CORE | INFO | SIFRA Core initialized successfully.
+2025-11-25 12:13:47,583 | SIFRA_CORE | INFO | SIFRA Core initialized successfully.
+2025-11-25 12:13:47,584 | SIFRA_CORE | INFO | SIFRA Core initialized successfully.
+2025-11-25 12:14:04,627 | SIFRA_CORE | INFO | Running full pipeline for goal: analyze
+2025-11-25 12:14:04,631 | SIFRA_CORE | INFO | Intent Vector: [1, 0, 0, 0, 0]
+2025-11-25 12:14:04,632 | SIFRA_CORE | INFO | Context Vector: [1.0, 5.0, 1.0, 0.0]
+2025-11-25 12:14:04,632 | SIFRA_CORE | INFO | Meaning Vector: [1, 0, 0, 0, 0, 1.0, 5.0, 1.0, 0.0]
+2025-11-25 12:14:04,633 | SIFRA_CORE | INFO | Emotion Score: 0.0
+2025-11-25 12:14:04,665 | SIFRA_CORE | INFO | Fusion Vector: [nan  0.  0.]
+2025-11-25 12:14:04,665 | SIFRA_CORE | INFO | Memory Signature: nan
+2025-11-25 12:22:48,892 | SIFRA_CORE | INFO | Running full pipeline for goal: predict
+2025-11-25 12:22:48,910 | SIFRA_CORE | INFO | Intent Vector: [0, 1, 0, 0, 0]
+2025-11-25 12:22:48,911 | SIFRA_CORE | INFO | Context Vector: [2.0, 4.0, 1.0, 0.0]
+2025-11-25 12:22:48,911 | SIFRA_CORE | INFO | Meaning Vector: [0, 1, 0, 0, 0, 2.0, 4.0, 1.0, 0.0]
+2025-11-25 12:22:48,911 | SIFRA_CORE | INFO | Emotion Score: 0.0
+2025-11-25 12:22:48,913 | SIFRA_CORE | INFO | Fusion Vector: [nan  0.  0.]
+2025-11-25 12:22:48,913 | SIFRA_CORE | INFO | Memory Signature: nan
+2025-11-25 12:23:18,437 | SIFRA_CORE | INFO | Running full pipeline for goal: forecast
+2025-11-25 12:23:18,449 | SIFRA_CORE | INFO | Intent Vector: [0, 0, 1, 0, 0]
+2025-11-25 12:23:18,449 | SIFRA_CORE | INFO | Context Vector: [3.0, 4.0, 1.0, 0.0]
+2025-11-25 12:23:18,450 | SIFRA_CORE | INFO | Meaning Vector: [0, 0, 1, 0, 0, 3.0, 4.0, 1.0, 0.0]
+2025-11-25 12:23:18,450 | SIFRA_CORE | INFO | Emotion Score: 0.0
+2025-11-25 12:23:18,451 | SIFRA_CORE | INFO | Fusion Vector: [nan  0.  0.]
+2025-11-25 12:23:18,452 | SIFRA_CORE | INFO | Memory Signature: nan
+2025-11-25 12:23:35,084 | SIFRA_CORE | INFO | Running full pipeline for goal: anomaly
+2025-11-25 12:23:35,094 | SIFRA_CORE | INFO | Intent Vector: [0, 0, 0, 1, 0]
+2025-11-25 12:23:35,094 | SIFRA_CORE | INFO | Context Vector: [4.0, 6.0, 1.0, 0.0]
+2025-11-25 12:23:35,095 | SIFRA_CORE | INFO | Meaning Vector: [0, 0, 0, 1, 0, 4.0, 6.0, 1.0, 0.0]
+2025-11-25 12:23:35,095 | SIFRA_CORE | INFO | Emotion Score: 0.0
+2025-11-25 12:23:35,097 | SIFRA_CORE | INFO | Fusion Vector: [nan  0.  0.]
+2025-11-25 12:23:35,097 | SIFRA_CORE | INFO | Memory Signature: nan
+2025-11-25 12:23:53,755 | SIFRA_CORE | INFO | Running full pipeline for goal: insights
+2025-11-25 12:23:53,767 | SIFRA_CORE | INFO | Intent Vector: [0, 0, 0, 0, 1]
+2025-11-25 12:23:53,767 | SIFRA_CORE | INFO | Context Vector: [5.0, 5.0, 1.0, 0.0]
+2025-11-25 12:23:53,768 | SIFRA_CORE | INFO | Meaning Vector: [0, 0, 0, 0, 1, 5.0, 5.0, 1.0, 0.0]
+2025-11-25 12:23:53,769 | SIFRA_CORE | INFO | Emotion Score: 0.0
+2025-11-25 12:23:53,770 | SIFRA_CORE | INFO | Fusion Vector: [nan  0.  0.]
+2025-11-25 12:23:53,771 | SIFRA_CORE | INFO | Memory Signature: nan
+2025-11-25 12:26:57,868 | SIFRA_CORE | INFO | SIFRA Core initialized successfully.
+2025-11-25 12:26:57,870 | SIFRA_CORE | INFO | SIFRA Core initialized successfully.
+2025-11-25 12:26:57,873 | SIFRA_CORE | INFO | SIFRA Core initialized successfully.
+2025-11-25 12:26:57,876 | SIFRA_CORE | INFO | SIFRA Core initialized successfully.
+2025-11-25 12:26:57,879 | SIFRA_CORE | INFO | SIFRA Core initialized successfully.
+2025-11-25 12:26:57,881 | SIFRA_CORE | INFO | SIFRA Core initialized successfully.
+2025-11-25 12:27:00,639 | SIFRA_CORE | INFO | Running full pipeline for goal: analyze
+2025-11-25 12:27:00,644 | SIFRA_CORE | INFO | Intent Vector: [1, 0, 0, 0, 0]
+2025-11-25 12:27:00,645 | SIFRA_CORE | INFO | Context Vector: [1.0, 5.0, 1.0, 0.0]
+2025-11-25 12:27:00,645 | SIFRA_CORE | INFO | Meaning Vector: [1, 0, 0, 0, 0, 1.0, 5.0, 1.0, 0.0]
+2025-11-25 12:27:00,645 | SIFRA_CORE | INFO | Emotion Score: 0.0
+2025-11-25 12:27:00,654 | SIFRA_CORE | INFO | Fusion Vector: [2. 0. 0.]
+2025-11-25 12:27:00,654 | SIFRA_CORE | INFO | Memory Signature: 0.7333333333333332
