@@ -6,8 +6,9 @@ from flask_cors import CORS
 # -----------------------------------------------------------
 # FIX PYTHON PATH FOR VERCEL (NO folder structure changes)
 # -----------------------------------------------------------
-ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
-sys.path.append(ROOT_DIR)
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
 
 # Initialize Flask app
 app = Flask(__name__)
